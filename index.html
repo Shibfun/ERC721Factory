@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shiba NFT Factory</title>
+    <title>Shiba NFT Factory 🐕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background: #1C2526;
             color: #E0E0E0;
             line-height: 1.6;
@@ -17,76 +18,79 @@
             min-height: 100vh;
             padding: 20px;
             background-image: url('https://www.transparenttextures.com/patterns/paws.png');
-            background-size: 200px;
+            background-size: 250px;
         }
-        .header { text-align: center; margin-bottom: 20px; }
+        .header { text-align: center; margin-bottom: 25px; }
         .header h1 {
-            font-size: 2.2em;
-            color: #D4A017;
-            text-shadow: 0 0 5px rgba(212, 160, 23, 0.5);
+            font-size: 2.5em;
+            color: #FFD700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            font-weight: 700;
         }
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
         .section {
-            background: #2C3539;
+            background: #263238;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            border: 1px solid #D4A017;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #FFD700;
         }
         .section-title {
-            font-size: 1.5em;
-            color: #D4A017;
+            font-size: 1.6em;
+            color: #FFD700;
             margin-bottom: 15px;
             text-align: center;
+            font-weight: 700;
         }
         .button-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         button {
-            background: #D4A017;
+            background: linear-gradient(135deg, #E6B800, #B58900);
             color: #1C2526;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1em;
-            transition: background 0.3s, transform 0.2s;
+            font-weight: 700;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
         }
-        button:hover { background: #B58900; transform: scale(1.05); }
-        button:disabled { background: #4A5659; cursor: not-allowed; transform: none; }
+        button:hover { background: linear-gradient(135deg, #FFD700, #E6B800); transform: scale(1.05); box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        button:disabled { background: #4A5659; cursor: not-allowed; transform: none; box-shadow: none; }
         button.loading { opacity: 0.7; pointer-events: none; }
         .copy-btn {
-            background: #2C3539;
-            color: #D4A017;
-            border: 1px solid #D4A017;
-            padding: 5px 10px;
-            font-size: 0.8em;
-            border-radius: 5px;
-            margin-left: 5px;
+            background: #263238;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            border-radius: 6px;
+            margin-left: 8px;
         }
-        .copy-btn:hover { background: #D4A017; color: #1C2526; }
+        .copy-btn:hover { background: #FFD700; color: #1C2526; transform: scale(1.05); }
         .input-group { display: flex; gap: 10px; margin: 10px 0; justify-content: center; flex-wrap: wrap; }
-        input, select {
+        input {
             padding: 10px;
-            border: 1px solid #D4A017;
-            border-radius: 5px;
+            border: 1px solid #FFD700;
+            border-radius: 6px;
             font-size: 1em;
-            width: 200px;
-            background: #3B444B;
+            width: 220px;
+            background: #37474F;
             color: #E0E0E0;
         }
-        input:focus, select:focus { outline: none; border-color: #B58900; }
+        input:focus { outline: none; border-color: #E6B800; }
         .nft-list, .base-uri-panel, .mint-panel, .owned-nfts { margin-top: 15px; }
         .nft-item, .owned-nft-item {
-            background: #3B444B;
-            padding: 10px;
-            border-radius: 5px;
+            background: #37474F;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 10px;
-            border: 1px solid #D4A017;
+            border: 1px solid #FFD700;
             color: #E0E0E0;
             display: flex;
             justify-content: space-between;
@@ -97,13 +101,14 @@
             width: 50px;
             height: 50px;
             object-fit: cover;
-            border-radius: 5px;
+            border-radius: 6px;
+            border: 1px solid #FFD700;
             margin-right: 10px;
         }
         .info-panel {
-            background: #3B444B;
-            padding: 10px;
-            border-radius: 5px;
+            background: #37474F;
+            padding: 12px;
+            border-radius: 8px;
             margin-top: 15px;
             font-size: 0.9em;
             color: #E0E0E0;
@@ -115,30 +120,44 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.3s;
         }
         .modal-content {
-            background: #2C3539;
+            background: #263238;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-align: center;
             max-width: 400px;
-            border: 1px solid #D4A017;
+            border: 1px solid #FFD700;
             color: #E0E0E0;
+            position: relative;
         }
-        footer {
-            margin-top: 20px;
-            color: #D4A017;
-            font-size: 0.9em;
-            text-align: center;
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(135deg, #E6B800, #B58900);
+            border-radius: 12px 12px 0 0;
+        }
+        hr { border: 0; height: 1px; background: #FFD700; opacity: 0.3; margin: 15px 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 600px) {
+            .section { padding: 15px; }
+            input { width: 100%; max-width: 300px; }
+            .header h1 { font-size: 2em; }
+            .section-title { font-size: 1.4em; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Shiba NFT Factory</h1>
+        <h1>Shiba NFT Factory 🐕</h1>
     </div>
     <div class="container">
         <div class="section">
@@ -148,6 +167,7 @@
             </div>
             <div class="info-panel">Wallet: <span id="walletAddress">Not connected</span></div>
         </div>
+        <hr>
         <div class="section" id="createSection">
             <div class="section-title">Create NFT Collection</div>
             <div class="input-group">
@@ -160,11 +180,22 @@
                 <button id="createNFTButton">Create Collection</button>
             </div>
         </div>
+        <hr>
         <div class="section" id="deployedSection">
             <div class="section-title">Your Deployed Collections</div>
             <div class="info-panel" id="deployedNFTs">Your Deployed Collections: None</div>
             <div class="nft-list" id="deployedNFTList"></div>
         </div>
+        <hr>
+        <div class="section" id="mintSection">
+            <div class="section-title">Mint NFT</div>
+            <div class="input-group">
+                <input type="text" id="contractAddress" placeholder="NFT Contract Address">
+                <button id="searchContractButton">Search</button>
+            </div>
+            <div class="mint-panel" id="mintPanel"></div>
+        </div>
+        <hr>
         <div class="section" id="baseURISection">
             <div class="section-title">Manage Base URI</div>
             <div class="input-group">
@@ -173,14 +204,7 @@
             </div>
             <div class="base-uri-panel" id="baseURIPanel"></div>
         </div>
-        <div class="section" id="mintSection">
-            <div class="section-title">Mint NFTs</div>
-            <div class="input-group">
-                <input type="text" id="contractAddress" placeholder="NFT Contract Address">
-                <button id="searchContractButton">Search</button>
-            </div>
-            <div class="mint-panel" id="mintPanel"></div>
-        </div>
+        <hr>
         <div class="section" id="ownedNFTsSection">
             <div class="section-title">Your NFTs</div>
             <div class="input-group">
@@ -189,13 +213,14 @@
             </div>
             <div class="owned-nfts" id="ownedNFTsList"></div>
         </div>
+        <hr>
         <div class="section">
             <div class="section-title">How It Works</div>
             <div class="info-panel">
                 <p><strong>Create:</strong> Deploy an NFT collection with a name, symbol, max supply, and mint price (in BONE).</p>
                 <p><strong>Deployed Collections:</strong> View and copy addresses of your deployed NFT collections.</p>
+                <p><strong>Mint:</strong> Search for a contract address to mint one NFT per transaction.</p>
                 <p><strong>Manage Base URI:</strong> Check or set the base URI for your collection if you’re the owner.</p>
-                <p><strong>Mint:</strong> Search for a contract address to view details and mint NFTs.</p>
                 <p><strong>Your NFTs:</strong> Check owned NFTs, view images, and transfer them to others.</p>
                 <p><strong>Tips:</strong> Ensure you're on Shibarium. Mint prices are in BONE. Verify contract details before minting or transferring.</p>
             </div>
@@ -226,7 +251,6 @@
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"baseURI","type":"string"}],"name":"BaseURIUpdated","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},
-            {"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"batchMint","outputs":[],"stateMutability":"payable","type":"function"},
             {"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},
             {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"string","name":"baseURI_","type":"string"}],"name":"setBaseURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
@@ -494,9 +518,6 @@
                     <p>Mint Price: ${mintPriceEth} BONE</p>
                     <p>Max Supply: ${maxSupply}</p>
                     <p>Total Minted: ${totalMinted}</p>
-                    <div class="input-group">
-                        <input type="number" id="mintAmount" placeholder="Amount to Mint" min="1" max="100">
-                    </div>
                     <div class="button-group">
                         <button onclick="mintNFT('${contractAddress}')">Mint NFT</button>
                     </div>
@@ -514,23 +535,12 @@
                 showModal('Please connect your wallet first!');
                 return;
             }
-            const amount = document.getElementById('mintAmount').value;
-            if (!amount || parseInt(amount) <= 0 || parseInt(amount) > 100) {
-                showModal('Please enter a valid amount (1-100)!');
-                return;
-            }
             const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
             try {
                 const mintPrice = await nftContract.methods.mintPrice().call();
-                const totalCost = BigInt(mintPrice) * BigInt(amount);
-                showModal('Minting NFTs...');
-                if (parseInt(amount) === 1) {
-                    await nftContract.methods.mint(accounts[0]).send({ from: accounts[0], value: mintPrice });
-                } else {
-                    await nftContract.methods.batchMint(accounts[0], amount).send({ from: accounts[0], value: totalCost });
-                }
-                showModal('NFTs minted successfully!');
-                document.getElementById('mintAmount').value = '';
+                showModal('Minting NFT...');
+                await nftContract.methods.mint(accounts[0]).send({ from: accounts[0], value: mintPrice });
+                showModal('NFT minted successfully!');
                 searchContract();
             } catch (error) {
                 showModal(`Minting failed: ${error.message}`);
