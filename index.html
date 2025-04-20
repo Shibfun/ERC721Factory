@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT Factory</title>
+    <title>Shiba NFT Factory</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Arial', sans-serif;
-            background: #FFFFFF;
-            color: #333333;
+            background: #1C2526;
+            color: #E0E0E0;
             line-height: 1.6;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background-image: url('https://www.transparenttextures.com/patterns/paws.png');
+            background-size: 200px;
         }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 {
-            font-size: 2em;
-            color: #333333;
+            font-size: 2.2em;
+            color: #D4A017;
+            text-shadow: 0 0 5px rgba(212, 160, 23, 0.5);
         }
         .container {
             width: 100%;
@@ -30,72 +33,80 @@
             gap: 20px;
         }
         .section {
-            background: #F9F9F9;
+            background: #2C3539;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E0E0E0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #D4A017;
         }
         .section-title {
-            font-size: 1.4em;
-            color: #333333;
+            font-size: 1.5em;
+            color: #D4A017;
             margin-bottom: 15px;
             text-align: center;
         }
         .button-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         button {
-            background: #007BFF;
-            color: #FFFFFF;
+            background: #D4A017;
+            color: #1C2526;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #CCCCCC; cursor: not-allowed; }
+        button:hover { background: #B58900; transform: scale(1.05); }
+        button:disabled { background: #4A5659; cursor: not-allowed; transform: none; }
         button.loading { opacity: 0.7; pointer-events: none; }
         .copy-btn {
-            background: #FFFFFF;
-            color: #007BFF;
-            border: 1px solid #007BFF;
+            background: #2C3539;
+            color: #D4A017;
+            border: 1px solid #D4A017;
             padding: 5px 10px;
             font-size: 0.8em;
             border-radius: 5px;
             margin-left: 5px;
         }
-        .copy-btn:hover { background: #007BFF; color: #FFFFFF; }
+        .copy-btn:hover { background: #D4A017; color: #1C2526; }
         .input-group { display: flex; gap: 10px; margin: 10px 0; justify-content: center; flex-wrap: wrap; }
         input, select {
             padding: 10px;
-            border: 1px solid #E0E0E0;
+            border: 1px solid #D4A017;
             border-radius: 5px;
             font-size: 1em;
             width: 200px;
-            background: #FFFFFF;
-            color: #333333;
+            background: #3B444B;
+            color: #E0E0E0;
         }
-        input:focus, select:focus { outline: none; border-color: #007BFF; }
-        .nft-list, .management-panel, .mint-panel, .owned-nfts { margin-top: 15px; }
+        input:focus, select:focus { outline: none; border-color: #B58900; }
+        .nft-list, .base-uri-panel, .mint-panel, .owned-nfts { margin-top: 15px; }
         .nft-item, .owned-nft-item {
-            background: #FFFFFF;
+            background: #3B444B;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
-            border: 1px solid #E0E0E0;
-            color: #333333;
+            border: 1px solid #D4A017;
+            color: #E0E0E0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+        }
+        .nft-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 10px;
         }
         .info-panel {
-            background: #F9F9F9;
+            background: #3B444B;
             padding: 10px;
             border-radius: 5px;
             margin-top: 15px;
             font-size: 0.9em;
-            color: #333333;
+            color: #E0E0E0;
         }
         .modal {
             display: none;
@@ -104,22 +115,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
         }
         .modal-content {
-            background: #FFFFFF;
+            background: #2C3539;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
             max-width: 400px;
-            border: 1px solid #E0E0E0;
-            color: #333333;
+            border: 1px solid #D4A017;
+            color: #E0E0E0;
         }
         footer {
             margin-top: 20px;
-            color: #666666;
+            color: #D4A017;
             font-size: 0.9em;
             text-align: center;
         }
@@ -127,7 +138,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>NFT Factory</h1>
+        <h1>Shiba NFT Factory</h1>
     </div>
     <div class="container">
         <div class="section">
@@ -140,20 +151,27 @@
         <div class="section" id="createSection">
             <div class="section-title">Create NFT Collection</div>
             <div class="input-group">
-                <input type="text" id="nftName" placeholder="Name (e.g., Crypto Dogs)">
-                <input type="text" id="nftSymbol" placeholder="Symbol (e.g., CDOG)">
+                <input type="text" id="nftName" placeholder="Name (e.g., Shiba Dogs)">
+                <input type="text" id="nftSymbol" placeholder="Symbol (e.g., SDOG)">
                 <input type="number" id="maxSupply" placeholder="Max Supply (e.g., 10000)" min="1">
                 <input type="number" id="mintPrice" placeholder="Mint Price (BONE)" min="0" step="0.01">
             </div>
             <div class="button-group">
                 <button id="createNFTButton">Create Collection</button>
             </div>
-            <div class="info-panel" id="createdNFTs">Your Created Collections: None</div>
-            <div class="nft-list" id="nftList"></div>
         </div>
-        <div class="section" id="managementSection" style="display: none;">
-            <div class="section-title">Manage Collection</div>
-            <div class="management-panel" id="managementPanel"></div>
+        <div class="section" id="deployedSection">
+            <div class="section-title">Your Deployed Collections</div>
+            <div class="info-panel" id="deployedNFTs">Your Deployed Collections: None</div>
+            <div class="nft-list" id="deployedNFTList"></div>
+        </div>
+        <div class="section" id="baseURISection">
+            <div class="section-title">Manage Base URI</div>
+            <div class="input-group">
+                <input type="text" id="baseURIContractAddress" placeholder="NFT Contract Address">
+                <button id="checkBaseURIButton">Check Base URI</button>
+            </div>
+            <div class="base-uri-panel" id="baseURIPanel"></div>
         </div>
         <div class="section" id="mintSection">
             <div class="section-title">Mint NFTs</div>
@@ -175,10 +193,11 @@
             <div class="section-title">How It Works</div>
             <div class="info-panel">
                 <p><strong>Create:</strong> Deploy an NFT collection with a name, symbol, max supply, and mint price (in BONE).</p>
-                <p><strong>Manage:</strong> Set token URIs or base URI as the collection owner.</p>
+                <p><strong>Deployed Collections:</strong> View and copy addresses of your deployed NFT collections.</p>
+                <p><strong>Manage Base URI:</strong> Check or set the base URI for your collection if you’re the owner.</p>
                 <p><strong>Mint:</strong> Search for a contract address to view details and mint NFTs.</p>
-                <p><strong>Check NFTs:</strong> Enter a contract address to see which NFTs you own.</p>
-                <p><strong>Tips:</strong> Ensure you're on Shibarium. Mint prices are in BONE. Verify contract details before minting.</p>
+                <p><strong>Your NFTs:</strong> Check owned NFTs, view images, and transfer them to others.</p>
+                <p><strong>Tips:</strong> Ensure you're on Shibarium. Mint prices are in BONE. Verify contract details before minting or transferring.</p>
             </div>
         </div>
     </div>
@@ -207,11 +226,10 @@
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"baseURI","type":"string"}],"name":"BaseURIUpdated","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},
-            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"}],"name":"TokenURIUpdated","type":"event"},
             {"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"batchMint","outputs":[],"stateMutability":"payable","type":"function"},
             {"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"string","name":"baseURI_","type":"string"}],"name":"setBaseURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
-            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"uri","type":"string"}],"name":"setTokenURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"maxSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"mintPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
@@ -231,6 +249,24 @@
             rpcUrls: ['https://www.shibrpc.com'],
             blockExplorerUrls: ['https://shibariumscan.io']
         };
+
+        async function fetchNFTImage(tokenURI) {
+            if (!tokenURI) return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+            try {
+                if (tokenURI.startsWith('ipfs://')) {
+                    tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                }
+                const response = await fetch(tokenURI);
+                const metadata = await response.json();
+                let image = metadata.image;
+                if (image && image.startsWith('ipfs://')) {
+                    image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                }
+                return image || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+            } catch {
+                return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+            }
+        }
 
         function showModal(message) {
             document.getElementById('modalMessage').innerHTML = message;
@@ -294,7 +330,7 @@
                 factoryContract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
                 showModal('Connected to Shibarium!');
                 updateUserAddress();
-                updateCreatedNFTs();
+                updateDeployedNFTs();
             } catch (error) {
                 showModal(`Connection failed: ${error.message}`);
             } finally {
@@ -302,21 +338,19 @@
             }
         }
 
-        async function updateCreatedNFTs() {
+        async function updateDeployedNFTs() {
             if (!web3 || !factoryContract || !accounts) {
-                document.getElementById('createdNFTs').innerText = 'Your Created Collections: None';
-                document.getElementById('nftList').innerHTML = '';
-                document.getElementById('managementSection').style.display = 'none';
+                document.getElementById('deployedNFTs').innerText = 'Your Deployed Collections: None';
+                document.getElementById('deployedNFTList').innerHTML = '';
                 return;
             }
             const contracts = await factoryContract.methods.getUserNFTContracts(accounts[0], 0, 100).call();
-            const nftList = document.getElementById('nftList');
+            const nftList = document.getElementById('deployedNFTList');
             nftList.innerHTML = '';
             if (contracts.length === 0) {
-                document.getElementById('createdNFTs').innerText = 'Your Created Collections: None';
-                document.getElementById('managementSection').style.display = 'none';
+                document.getElementById('deployedNFTs').innerText = 'Your Deployed Collections: None';
             } else {
-                document.getElementById('createdNFTs').innerText = `Your Created Collections: ${contracts.length}`;
+                document.getElementById('deployedNFTs').innerText = `Your Deployed Collections: ${contracts.length}`;
                 for (const contractAddr of contracts) {
                     const nftContract = new web3.eth.Contract(NFT_ABI, contractAddr);
                     const name = await nftContract.methods.name().call();
@@ -326,13 +360,11 @@
                     nftItem.innerHTML = `
                         <span>${name} (${symbol}) - ${contractAddr.slice(0, 6)}...${contractAddr.slice(-4)}</span>
                         <div>
-                            <button class="copy-btn" onclick="copyToClipboard('${contractAddr}')">Copy</button>
-                            <button onclick="manageNFT('${contractAddr}')">Manage</button>
+                            <button class="copy-btn" onclick="copyToClipboard('${contractAddr}')">Copy Address</button>
                         </div>
                     `;
                     nftList.appendChild(nftItem);
                 }
-                document.getElementById('managementSection').style.display = 'block';
             }
         }
 
@@ -368,7 +400,7 @@
                 document.getElementById('nftSymbol').value = '';
                 document.getElementById('maxSupply').value = '';
                 document.getElementById('mintPrice').value = '';
-                updateCreatedNFTs();
+                updateDeployedNFTs();
             } catch (error) {
                 showModal(`Creation failed: ${error.message}`);
             } finally {
@@ -376,63 +408,65 @@
             }
         }
 
-        async function manageNFT(contractAddress) {
-            selectedNFTContract = new web3.eth.Contract(NFT_ABI, contractAddress);
-            const name = await selectedNFTContract.methods.name().call();
-            const symbol = await selectedNFTContract.methods.symbol().call();
-            const owner = await selectedNFTContract.methods.owner().call();
-            const isOwner = owner.toLowerCase() === accounts[0].toLowerCase();
-            const managementPanel = document.getElementById('managementPanel');
-            managementPanel.innerHTML = `
-                <p>Managing: ${name} (${symbol}) - ${contractAddress.slice(0, 6)}...${contractAddress.slice(-4)}</p>
-                <p>Owner: ${owner.slice(0, 6)}...${owner.slice(-4)}</p>
-                ${isOwner ? `
-                    <div class="input-group">
-                        <input type="number" id="tokenId" placeholder="Token ID" min="0">
-                        <input type="text" id="tokenURI" placeholder="Token URI (e.g., ipfs://...)">
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="baseURI" placeholder="Base URI (e.g., https://api.example.com/)">
-                    </div>
-                    <div class="button-group">
-                        <button onclick="setTokenURI()">Set Token URI</button>
-                        <button onclick="setBaseURI()">Set Base URI</button>
-                    </div>
-                ` : '<p>Only the owner can manage this collection.</p>'}
-            `;
-        }
-
-        async function setTokenURI() {
-            if (!selectedNFTContract || !accounts) return;
-            const tokenId = document.getElementById('tokenId').value;
-            const uri = document.getElementById('tokenURI').value.trim();
-            if (!tokenId || !uri) {
-                showModal('Please enter a token ID and URI!');
+        async function checkBaseURI() {
+            if (!web3 || !accounts) {
+                showModal('Please connect your wallet first!');
                 return;
             }
+            const contractAddress = document.getElementById('baseURIContractAddress').value.trim();
+            if (!web3.utils.isAddress(contractAddress)) {
+                showModal('Invalid contract address!');
+                return;
+            }
+            const checkButton = document.getElementById('checkBaseURIButton');
             try {
-                showModal('Setting token URI...');
-                await selectedNFTContract.methods.setTokenURI(tokenId, uri).send({ from: accounts[0] });
-                showModal('Token URI set successfully!');
-                document.getElementById('tokenId').value = '';
-                document.getElementById('tokenURI').value = '';
+                checkButton.classList.add('loading');
+                const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+                const name = await nftContract.methods.name().call();
+                const owner = await nftContract.methods.owner().call();
+                const isOwner = owner.toLowerCase() === accounts[0].toLowerCase();
+                let baseURI = '';
+                try {
+                    baseURI = await nftContract.methods.tokenURI(0).call();
+                    baseURI = baseURI.substring(0, baseURI.lastIndexOf('/') + 1) || '';
+                } catch {
+                    baseURI = 'Not set';
+                }
+                const baseURIPanel = document.getElementById('baseURIPanel');
+                baseURIPanel.innerHTML = `
+                    <p>Collection: ${name}</p>
+                    <p>Current Base URI: ${baseURI}</p>
+                    ${isOwner ? `
+                        <div class="input-group">
+                            <input type="text" id="newBaseURI" placeholder="New Base URI (e.g., https://api.example.com/)">
+                        </div>
+                        <div class="button-group">
+                            <button onclick="setBaseURI('${contractAddress}')">Set Base URI</button>
+                        </div>
+                    ` : '<p>Only the owner can set the base URI.</p>'}
+                `;
             } catch (error) {
-                showModal(`Failed: ${error.message}`);
+                showModal(`Failed to load contract: ${error.message}`);
+                document.getElementById('baseURIPanel').innerHTML = '';
+            } finally {
+                checkButton.classList.remove('loading');
             }
         }
 
-        async function setBaseURI() {
-            if (!selectedNFTContract || !accounts) return;
-            const baseURI = document.getElementById('baseURI').value.trim();
+        async function setBaseURI(contractAddress) {
+            if (!web3 || !accounts) return;
+            const baseURI = document.getElementById('newBaseURI').value.trim();
             if (!baseURI) {
                 showModal('Please enter a base URI!');
                 return;
             }
+            const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
             try {
                 showModal('Setting base URI...');
-                await selectedNFTContract.methods.setBaseURI(baseURI).send({ from: accounts[0] });
+                await nftContract.methods.setBaseURI(baseURI).send({ from: accounts[0] });
                 showModal('Base URI set successfully!');
-                document.getElementById('baseURI').value = '';
+                document.getElementById('newBaseURI').value = '';
+                checkBaseURI();
             } catch (error) {
                 showModal(`Failed: ${error.message}`);
             }
@@ -528,11 +562,21 @@
                 const tokens = await nftContract.methods.tokensOfOwner(accounts[0], 0, 100).call();
                 for (const tokenId of tokens) {
                     const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+                    const imageSrc = await fetchNFTImage(tokenURI);
                     const nftItem = document.createElement('div');
                     nftItem.className = 'owned-nft-item';
                     nftItem.innerHTML = `
-                        <span>Token ID: ${tokenId} ${tokenURI ? `- URI: ${tokenURI.slice(0, 20)}...` : ''}</span>
-                        <button class="copy-btn" onclick="copyToClipboard('${tokenId}')">Copy ID</button>
+                        <div style="display: flex; align-items: center;">
+                            <img src="${imageSrc}" class="nft-image" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='">
+                            <span>Token ID: ${tokenId}</span>
+                        </div>
+                        <div>
+                            <button class="copy-btn" onclick="copyToClipboard('${tokenId}')">Copy ID</button>
+                            <button onclick="transferNFT('${contractAddress}', '${tokenId}')">Transfer</button>
+                        </div>
+                        <div class="input-group" style="width: 100%; margin-top: 10px;">
+                            <input type="text" id="transferAddress_${tokenId}" placeholder="Recipient Address">
+                        </div>
                     `;
                     ownedNFTsList.appendChild(nftItem);
                 }
@@ -545,10 +589,33 @@
             }
         }
 
+        async function transferNFT(contractAddress, tokenId) {
+            if (!web3 || !accounts) {
+                showModal('Please connect your wallet first!');
+                return;
+            }
+            const toAddress = document.getElementById(`transferAddress_${tokenId}`).value.trim();
+            if (!web3.utils.isAddress(toAddress)) {
+                showModal('Invalid recipient address!');
+                return;
+            }
+            const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+            try {
+                showModal('Transferring NFT...');
+                await nftContract.methods.safeTransferFrom(accounts[0], toAddress, tokenId).send({ from: accounts[0] });
+                showModal('NFT transferred successfully!');
+                document.getElementById(`transferAddress_${tokenId}`).value = '';
+                checkOwnedNFTs();
+            } catch (error) {
+                showModal(`Transfer failed: ${error.message}`);
+            }
+        }
+
         document.getElementById('connectButton').addEventListener('click', connectWallet);
         document.getElementById('createNFTButton').addEventListener('click', createNFT);
         document.getElementById('searchContractButton').addEventListener('click', searchContract);
         document.getElementById('checkOwnedNFTsButton').addEventListener('click', checkOwnedNFTs);
+        document.getElementById('checkBaseURIButton').addEventListener('click', checkBaseURI);
 
         window.ethereum?.on('chainChanged', (chainId) => {
             if (parseInt(chainId, 16) !== 109) {
@@ -557,7 +624,7 @@
                 factoryContract = null;
                 accounts = null;
                 updateUserAddress();
-                updateCreatedNFTs();
+                updateDeployedNFTs();
             } else {
                 connectWallet();
             }
@@ -572,7 +639,7 @@
                 factoryContract = null;
                 accounts = null;
                 updateUserAddress();
-                updateCreatedNFTs();
+                updateDeployedNFTs();
             }
         });
 
