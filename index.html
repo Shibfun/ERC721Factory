@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Factory</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 {
+            font-size: 2em;
+            color: #333333;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            background: #F9F9F9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E0E0E0;
+        }
+        .section-title {
+            font-size: 1.4em;
+            color: #333333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        button {
+            background: #007BFF;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #CCCCCC; cursor: not-allowed; }
+        button.loading { opacity: 0.7; pointer-events: none; }
+        .copy-btn {
+            background: #FFFFFF;
+            color: #007BFF;
+            border: 1px solid #007BFF;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+        .copy-btn:hover { background: #007BFF; color: #FFFFFF; }
+        .input-group { display: flex; gap: 10px; margin: 10px 0; justify-content: center; flex-wrap: wrap; }
+        input, select {
+            padding: 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 200px;
+            background: #FFFFFF;
+            color: #333333;
+        }
+        input:focus, select:focus { outline: none; border-color: #007BFF; }
+        .nft-list, .management-panel, .mint-panel, .owned-nfts { margin-top: 15px; }
+        .nft-item, .owned-nft-item {
+            background: #FFFFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #E0E0E0;
+            color: #333333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .info-panel {
+            background: #F9F9F9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #333333;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            border: 1px solid #E0E0E0;
+            color: #333333;
+        }
+        footer {
+            margin-top: 20px;
+            color: #666666;
+            font-size: 0.9em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>NFT Factory</h1>
+    </div>
+    <div class="container">
+        <div class="section">
+            <div class="section-title">Connect Wallet</div>
+            <div class="button-group">
+                <button id="connectButton">Connect MetaMask</button>
+            </div>
+            <div class="info-panel">Wallet: <span id="walletAddress">Not connected</span></div>
+        </div>
+        <div class="section" id="createSection">
+            <div class="section-title">Create NFT Collection</div>
+            <div class="input-group">
+                <input type="text" id="nftName" placeholder="Name (e.g., Crypto Dogs)">
+                <input type="text" id="nftSymbol" placeholder="Symbol (e.g., CDOG)">
+                <input type="number" id="maxSupply" placeholder="Max Supply (e.g., 10000)" min="1">
+                <input type="number" id="mintPrice" placeholder="Mint Price (BONE)" min="0" step="0.01">
+            </div>
+            <div class="button-group">
+                <button id="createNFTButton">Create Collection</button>
+            </div>
+            <div class="info-panel" id="createdNFTs">Your Created Collections: None</div>
+            <div class="nft-list" id="nftList"></div>
+        </div>
+        <div class="section" id="managementSection" style="display: none;">
+            <div class="section-title">Manage Collection</div>
+            <div class="management-panel" id="managementPanel"></div>
+        </div>
+        <div class="section" id="mintSection">
+            <div class="section-title">Mint NFTs</div>
+            <div class="input-group">
+                <input type="text" id="contractAddress" placeholder="NFT Contract Address">
+                <button id="searchContractButton">Search</button>
+            </div>
+            <div class="mint-panel" id="mintPanel"></div>
+        </div>
+        <div class="section" id="ownedNFTsSection">
+            <div class="section-title">Your NFTs</div>
+            <div class="input-group">
+                <input type="text" id="ownedContractAddress" placeholder="NFT Contract Address">
+                <button id="checkOwnedNFTsButton">Check Owned NFTs</button>
+            </div>
+            <div class="owned-nfts" id="ownedNFTsList"></div>
+        </div>
+        <div class="section">
+            <div class="section-title">How It Works</div>
+            <div class="info-panel">
+                <p><strong>Create:</strong> Deploy an NFT collection with a name, symbol, max supply, and mint price (in BONE).</p>
+                <p><strong>Manage:</strong> Set token URIs or base URI as the collection owner.</p>
+                <p><strong>Mint:</strong> Search for a contract address to view details and mint NFTs.</p>
+                <p><strong>Check NFTs:</strong> Enter a contract address to see which NFTs you own.</p>
+                <p><strong>Tips:</strong> Ensure you're on Shibarium. Mint prices are in BONE. Verify contract details before minting.</p>
+            </div>
+        </div>
+    </div>
+    <footer>Powered by Shibarium © 2025</footer>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <button onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        let web3, accounts, factoryContract, selectedNFTContract;
+        const FACTORY_ADDRESS = "0x257154D8e492a095f8a6Fa160888f3ee2FCb9E35";
+        const FACTORY_ABI = [
+            {"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"uint256","name":"mintPrice","type":"uint256"}],"name":"deployNFTContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"page","type":"uint256"},{"internalType":"uint256","name":"pageSize","type":"uint256"}],"name":"getUserNFTContracts","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"string","name":"symbol","type":"string"},{"indexed":false,"internalType":"uint256","name":"maxSupply","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"mintPrice","type":"uint256"}],"name":"NFTContractDeployed","type":"event"}
+        ];
+        const NFT_ABI = [
+            {"inputs":[{"internalType":"string","name":"name_","type":"string"},{"internalType":"string","name":"symbol_","type":"string"},{"internalType":"uint256","name":"maxSupply_","type":"uint256"},{"internalType":"uint256","name":"mintPrice_","type":"uint256"},{"internalType":"address","name":"owner_","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Minted","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"baseURI","type":"string"}],"name":"BaseURIUpdated","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"uri","type":"string"}],"name":"TokenURIUpdated","type":"event"},
+            {"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"batchMint","outputs":[],"stateMutability":"payable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},
+            {"inputs":[{"internalType":"string","name":"baseURI_","type":"string"}],"name":"setBaseURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"string","name":"uri","type":"string"}],"name":"setTokenURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"maxSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"mintPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"remainingSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"page","type":"uint256"},{"internalType":"uint256","name":"pageSize","type":"uint256"}],"name":"tokensOfOwner","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalMinted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+        ];
+        const shibariumMainnet = {
+            chainId: 109,
+            chainName: 'Shibarium',
+            nativeCurrency: { name: 'BONE', symbol: 'BONE', decimals: 18 },
+            rpcUrls: ['https://www.shibrpc.com'],
+            blockExplorerUrls: ['https://shibariumscan.io']
+        };
+
+        function showModal(message) {
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showModal('Address copied to clipboard!');
+            }).catch(err => {
+                showModal('Failed to copy address: ' + err);
+            });
+        }
+
+        async function updateUserAddress() {
+            if (!accounts) {
+                document.getElementById('walletAddress').innerText = 'Not connected';
+            } else {
+                const shortAddress = `${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+                document.getElementById('walletAddress').innerText = shortAddress;
+            }
+        }
+
+        async function connectWallet() {
+            const connectButton = document.getElementById('connectButton');
+            try {
+                if (!window.ethereum) {
+                    showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
+                    return;
+                }
+                connectButton.classList.add('loading');
+                web3 = new Web3(window.ethereum);
+                accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                if (!accounts.length) {
+                    showModal('Please unlock or connect your wallet.');
+                    return;
+                }
+                const chainId = await web3.eth.getChainId();
+                if (chainId !== 109) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: web3.utils.numberToHex(109) }]
+                        });
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [shibariumMainnet]
+                            });
+                        } else {
+                            showModal('Failed to switch network. Please add Shibarium manually.');
+                            return;
+                        }
+                    }
+                }
+                factoryContract = new web3.eth.Contract(FACTORY_ABI, FACTORY_ADDRESS);
+                showModal('Connected to Shibarium!');
+                updateUserAddress();
+                updateCreatedNFTs();
+            } catch (error) {
+                showModal(`Connection failed: ${error.message}`);
+            } finally {
+                connectButton.classList.remove('loading');
+            }
+        }
+
+        async function updateCreatedNFTs() {
+            if (!web3 || !factoryContract || !accounts) {
+                document.getElementById('createdNFTs').innerText = 'Your Created Collections: None';
+                document.getElementById('nftList').innerHTML = '';
+                document.getElementById('managementSection').style.display = 'none';
+                return;
+            }
+            const contracts = await factoryContract.methods.getUserNFTContracts(accounts[0], 0, 100).call();
+            const nftList = document.getElementById('nftList');
+            nftList.innerHTML = '';
+            if (contracts.length === 0) {
+                document.getElementById('createdNFTs').innerText = 'Your Created Collections: None';
+                document.getElementById('managementSection').style.display = 'none';
+            } else {
+                document.getElementById('createdNFTs').innerText = `Your Created Collections: ${contracts.length}`;
+                for (const contractAddr of contracts) {
+                    const nftContract = new web3.eth.Contract(NFT_ABI, contractAddr);
+                    const name = await nftContract.methods.name().call();
+                    const symbol = await nftContract.methods.symbol().call();
+                    const nftItem = document.createElement('div');
+                    nftItem.className = 'nft-item';
+                    nftItem.innerHTML = `
+                        <span>${name} (${symbol}) - ${contractAddr.slice(0, 6)}...${contractAddr.slice(-4)}</span>
+                        <div>
+                            <button class="copy-btn" onclick="copyToClipboard('${contractAddr}')">Copy</button>
+                            <button onclick="manageNFT('${contractAddr}')">Manage</button>
+                        </div>
+                    `;
+                    nftList.appendChild(nftItem);
+                }
+                document.getElementById('managementSection').style.display = 'block';
+            }
+        }
+
+        async function createNFT() {
+            if (!web3 || !factoryContract || !accounts) {
+                showModal('Please connect your wallet first!');
+                return;
+            }
+            const name = document.getElementById('nftName').value.trim();
+            const symbol = document.getElementById('nftSymbol').value.trim();
+            const maxSupply = document.getElementById('maxSupply').value;
+            const mintPrice = document.getElementById('mintPrice').value;
+            if (!name || !symbol || !maxSupply || !mintPrice) {
+                showModal('Please fill in all fields!');
+                return;
+            }
+            if (parseInt(maxSupply) <= 0) {
+                showModal('Max supply must be greater than 0!');
+                return;
+            }
+            if (parseFloat(mintPrice) < 0) {
+                showModal('Mint price cannot be negative!');
+                return;
+            }
+            const createButton = document.getElementById('createNFTButton');
+            try {
+                createButton.classList.add('loading');
+                showModal('Creating NFT collection...');
+                const mintPriceWei = web3.utils.toWei(mintPrice, 'ether');
+                await factoryContract.methods.deployNFTContract(name, symbol, maxSupply, mintPriceWei).send({ from: accounts[0] });
+                showModal('NFT collection created successfully!');
+                document.getElementById('nftName').value = '';
+                document.getElementById('nftSymbol').value = '';
+                document.getElementById('maxSupply').value = '';
+                document.getElementById('mintPrice').value = '';
+                updateCreatedNFTs();
+            } catch (error) {
+                showModal(`Creation failed: ${error.message}`);
+            } finally {
+                createButton.classList.remove('loading');
+            }
+        }
+
+        async function manageNFT(contractAddress) {
+            selectedNFTContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+            const name = await selectedNFTContract.methods.name().call();
+            const symbol = await selectedNFTContract.methods.symbol().call();
+            const owner = await selectedNFTContract.methods.owner().call();
+            const isOwner = owner.toLowerCase() === accounts[0].toLowerCase();
+            const managementPanel = document.getElementById('managementPanel');
+            managementPanel.innerHTML = `
+                <p>Managing: ${name} (${symbol}) - ${contractAddress.slice(0, 6)}...${contractAddress.slice(-4)}</p>
+                <p>Owner: ${owner.slice(0, 6)}...${owner.slice(-4)}</p>
+                ${isOwner ? `
+                    <div class="input-group">
+                        <input type="number" id="tokenId" placeholder="Token ID" min="0">
+                        <input type="text" id="tokenURI" placeholder="Token URI (e.g., ipfs://...)">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="baseURI" placeholder="Base URI (e.g., https://api.example.com/)">
+                    </div>
+                    <div class="button-group">
+                        <button onclick="setTokenURI()">Set Token URI</button>
+                        <button onclick="setBaseURI()">Set Base URI</button>
+                    </div>
+                ` : '<p>Only the owner can manage this collection.</p>'}
+            `;
+        }
+
+        async function setTokenURI() {
+            if (!selectedNFTContract || !accounts) return;
+            const tokenId = document.getElementById('tokenId').value;
+            const uri = document.getElementById('tokenURI').value.trim();
+            if (!tokenId || !uri) {
+                showModal('Please enter a token ID and URI!');
+                return;
+            }
+            try {
+                showModal('Setting token URI...');
+                await selectedNFTContract.methods.setTokenURI(tokenId, uri).send({ from: accounts[0] });
+                showModal('Token URI set successfully!');
+                document.getElementById('tokenId').value = '';
+                document.getElementById('tokenURI').value = '';
+            } catch (error) {
+                showModal(`Failed: ${error.message}`);
+            }
+        }
+
+        async function setBaseURI() {
+            if (!selectedNFTContract || !accounts) return;
+            const baseURI = document.getElementById('baseURI').value.trim();
+            if (!baseURI) {
+                showModal('Please enter a base URI!');
+                return;
+            }
+            try {
+                showModal('Setting base URI...');
+                await selectedNFTContract.methods.setBaseURI(baseURI).send({ from: accounts[0] });
+                showModal('Base URI set successfully!');
+                document.getElementById('baseURI').value = '';
+            } catch (error) {
+                showModal(`Failed: ${error.message}`);
+            }
+        }
+
+        async function searchContract() {
+            const contractAddress = document.getElementById('contractAddress').value.trim();
+            if (!web3.utils.isAddress(contractAddress)) {
+                showModal('Invalid contract address!');
+                return;
+            }
+            const searchButton = document.getElementById('searchContractButton');
+            try {
+                searchButton.classList.add('loading');
+                const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+                const name = await nftContract.methods.name().call();
+                const symbol = await nftContract.methods.symbol().call();
+                const mintPrice = await nftContract.methods.mintPrice().call();
+                const maxSupply = await nftContract.methods.maxSupply().call();
+                const totalMinted = await nftContract.methods.totalMinted().call();
+                const mintPriceEth = web3.utils.fromWei(mintPrice, 'ether');
+                const mintPanel = document.getElementById('mintPanel');
+                mintPanel.innerHTML = `
+                    <p>Collection: ${name} (${symbol})</p>
+                    <p>Mint Price: ${mintPriceEth} BONE</p>
+                    <p>Max Supply: ${maxSupply}</p>
+                    <p>Total Minted: ${totalMinted}</p>
+                    <div class="input-group">
+                        <input type="number" id="mintAmount" placeholder="Amount to Mint" min="1" max="100">
+                    </div>
+                    <div class="button-group">
+                        <button onclick="mintNFT('${contractAddress}')">Mint NFT</button>
+                    </div>
+                `;
+            } catch (error) {
+                showModal(`Failed to load contract: ${error.message}`);
+                document.getElementById('mintPanel').innerHTML = '';
+            } finally {
+                searchButton.classList.remove('loading');
+            }
+        }
+
+        async function mintNFT(contractAddress) {
+            if (!web3 || !accounts) {
+                showModal('Please connect your wallet first!');
+                return;
+            }
+            const amount = document.getElementById('mintAmount').value;
+            if (!amount || parseInt(amount) <= 0 || parseInt(amount) > 100) {
+                showModal('Please enter a valid amount (1-100)!');
+                return;
+            }
+            const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+            try {
+                const mintPrice = await nftContract.methods.mintPrice().call();
+                const totalCost = BigInt(mintPrice) * BigInt(amount);
+                showModal('Minting NFTs...');
+                if (parseInt(amount) === 1) {
+                    await nftContract.methods.mint(accounts[0]).send({ from: accounts[0], value: mintPrice });
+                } else {
+                    await nftContract.methods.batchMint(accounts[0], amount).send({ from: accounts[0], value: totalCost });
+                }
+                showModal('NFTs minted successfully!');
+                document.getElementById('mintAmount').value = '';
+                searchContract();
+            } catch (error) {
+                showModal(`Minting failed: ${error.message}`);
+            }
+        }
+
+        async function checkOwnedNFTs() {
+            if (!web3 || !accounts) {
+                showModal('Please connect your wallet first!');
+                return;
+            }
+            const contractAddress = document.getElementById('ownedContractAddress').value.trim();
+            if (!web3.utils.isAddress(contractAddress)) {
+                showModal('Invalid contract address!');
+                return;
+            }
+            const checkButton = document.getElementById('checkOwnedNFTsButton');
+            try {
+                checkButton.classList.add('loading');
+                const nftContract = new web3.eth.Contract(NFT_ABI, contractAddress);
+                const name = await nftContract.methods.name().call();
+                const balance = await nftContract.methods.balanceOf(accounts[0]).call();
+                const ownedNFTsList = document.getElementById('ownedNFTsList');
+                ownedNFTsList.innerHTML = '';
+                if (parseInt(balance) === 0) {
+                    ownedNFTsList.innerHTML = '<p>You own no NFTs in this collection.</p>';
+                    return;
+                }
+                const tokens = await nftContract.methods.tokensOfOwner(accounts[0], 0, 100).call();
+                for (const tokenId of tokens) {
+                    const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+                    const nftItem = document.createElement('div');
+                    nftItem.className = 'owned-nft-item';
+                    nftItem.innerHTML = `
+                        <span>Token ID: ${tokenId} ${tokenURI ? `- URI: ${tokenURI.slice(0, 20)}...` : ''}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${tokenId}')">Copy ID</button>
+                    `;
+                    ownedNFTsList.appendChild(nftItem);
+                }
+                showModal(`Found ${tokens.length} NFTs in ${name}!`);
+            } catch (error) {
+                showModal(`Failed to load NFTs: ${error.message}`);
+                document.getElementById('ownedNFTsList').innerHTML = '';
+            } finally {
+                checkButton.classList.remove('loading');
+            }
+        }
+
+        document.getElementById('connectButton').addEventListener('click', connectWallet);
+        document.getElementById('createNFTButton').addEventListener('click', createNFT);
+        document.getElementById('searchContractButton').addEventListener('click', searchContract);
+        document.getElementById('checkOwnedNFTsButton').addEventListener('click', checkOwnedNFTs);
+
+        window.ethereum?.on('chainChanged', (chainId) => {
+            if (parseInt(chainId, 16) !== 109) {
+                showModal('Switched to wrong network. Please reconnect to Shibarium.');
+                web3 = null;
+                factoryContract = null;
+                accounts = null;
+                updateUserAddress();
+                updateCreatedNFTs();
+            } else {
+                connectWallet();
+            }
+        });
+
+        window.ethereum?.on('accountsChanged', (newAccounts) => {
+            if (newAccounts.length) {
+                connectWallet();
+            } else {
+                showModal('Wallet disconnected. Please reconnect.');
+                web3 = null;
+                factoryContract = null;
+                accounts = null;
+                updateUserAddress();
+                updateCreatedNFTs();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            if (!window.location.protocol.startsWith('http')) {
+                showModal('Please run this page via a local server (e.g., "npx serve") to connect MetaMask.');
+            } else if (!window.ethereum) {
+                showModal('No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.');
+            }
+        });
+    </script>
+</body>
+</html>
